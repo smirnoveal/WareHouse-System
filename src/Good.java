@@ -1,13 +1,11 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Good {
     private Connection connection;
-    private List<Good> goodsList = new ArrayList<>();
+    private static List<Good> goodsList = new ArrayList<>();
+    private static DatabaseAccess databaseAccess;
 
     public Good() {
         try {
@@ -25,6 +23,7 @@ public class Good {
             statement.setInt(2, quantity); // Используем setInt для вставки количества
             statement.executeUpdate();
             connection.commit();
+            saveToDatabase();
             System.out.println("Товар добавлен в базу данных: " + goodName + ", количество: " + quantity);
         } catch (Exception e) {
             e.printStackTrace();
@@ -38,6 +37,7 @@ public class Good {
             statement.setString(1, goodName);
             statement.executeUpdate();
             connection.commit();
+            saveToDatabase();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -48,6 +48,7 @@ public class Good {
             if (good.getName().equals(name)) {
                 if (good.getQuantity() >= quantity) {
                     good.setQuantity(good.getQuantity() - quantity);
+                    saveToDatabase();
                     System.out.println("Товар выдан: " + name + ", количество: " + quantity);
                     break;
                 } else {
@@ -85,6 +86,17 @@ public class Good {
         public void setQuantity(int quantity) {
             this.quantity = quantity;
         }
+    private static void saveToDatabase() {
+        try (Connection connection = databaseAccess.getConnection();
+             Statement statement = connection.createStatement();) {
+            for (Good good : goodsList) {
+                statement.executeUpdate("INSERT INTO goods (name, quantity) VALUES ('" + good.getName() + "', '" + good.getQuantity() + "')");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     }
 
 

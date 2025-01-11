@@ -48,7 +48,7 @@ public class WarehouseSystemFrame extends JFrame {
         add(new JScrollPane(goodsListArea));
 
         // Установка размера фрейма и его отображение
-        setSize(1000, 600);
+        setSize(1400, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
 
