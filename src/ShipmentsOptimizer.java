@@ -16,7 +16,7 @@ public class ShipmentsOptimizer {
 
     public void optimizeShipments() {
         try {
-            PreparedStatement statement = connection.prepareStatement("UPDATE shipments SET status = 'optimized' WHERE status = 'pending'");
+            PreparedStatement statement = connection.prepareStatement("UPDATE shipment SET status = 'optimized' WHERE status = 'pending'");
             statement.executeUpdate();
             connection.commit();
             System.out.println("Отгрузки оптимизированы.");
