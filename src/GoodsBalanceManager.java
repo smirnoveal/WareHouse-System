@@ -6,7 +6,8 @@ public class GoodsBalanceManager {
     public GoodsBalanceManager() {
         try {
             Class.forName("org.postgresql.Driver");
-            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/warehouse_system", "username", "password");
+            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres",
+                    "postgres", "1111");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -14,7 +15,7 @@ public class GoodsBalanceManager {
 
     public int getGoodsBalance(String goodName) {
         try {
-            PreparedStatement statement = connection.prepareStatement("SELECT quantity FROM goods WHERE name = ?");
+            PreparedStatement statement = connection.prepareStatement("SELECT quantity FROM product WHERE name = ?");
             statement.setString(1, goodName);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {

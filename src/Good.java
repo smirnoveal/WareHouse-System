@@ -10,7 +10,7 @@ public class Good {
     public Good() {
         try {
             Class.forName("org.postgresql.Driver");
-            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/warehouse_system", "username", "password");
+            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1111");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -18,7 +18,7 @@ public class Good {
 
     public void addGood(String goodName, int quantity) throws SQLException {
         try {
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO goods (name, quantity) VALUES (?, ?)");
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO product (name, quantity) VALUES (?, ?)");
             statement.setString(1, goodName);
             statement.setInt(2, quantity); // Используем setInt для вставки количества
             statement.executeUpdate();
@@ -33,7 +33,7 @@ public class Good {
 
     public void deleteGood(String goodName) {
         try {
-            PreparedStatement statement = connection.prepareStatement("DELETE FROM goods WHERE name = ?");
+            PreparedStatement statement = connection.prepareStatement("DELETE FROM product WHERE name = ?");
             statement.setString(1, goodName);
             statement.executeUpdate();
             connection.commit();
@@ -44,18 +44,24 @@ public class Good {
     }
 
     public void issueGood(String name, int quantity) {
-        for (Good good : goodsList) {
-            if (good.getName().equals(name)) {
-                if (good.getQuantity() >= quantity) {
-                    good.setQuantity(good.getQuantity() - quantity);
-                    saveToDatabase();
-                    System.out.println("Товар выдан: " + name + ", количество: " + quantity);
-                    break;
-                } else {
-                    System.out.println("Недостаточно товаров: " + name);
-                    break;
+        try {
+            if (this.connection != null) {
+                for (Good good : goodsList) {
+                    if (good.getName().equals(name)) {
+                        if (good.getQuantity() >= quantity) {
+                            good.setQuantity(good.getQuantity() - quantity);
+                            saveToDatabase();
+                            System.out.println("Товар выдан: " + name + ", количество: " + quantity);
+                            break;
+                        } else {
+                            System.out.println("Недостаточно товаров: " + name);
+                            break;
+                        }
+                    }
                 }
             }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -90,7 +96,7 @@ public class Good {
         try (Connection connection = databaseAccess.getConnection();
              Statement statement = connection.createStatement();) {
             for (Good good : goodsList) {
-                statement.executeUpdate("INSERT INTO goods (name, quantity) VALUES ('" + good.getName() + "', '" + good.getQuantity() + "')");
+                statement.executeUpdate("INSERT INTO product (name, quantity) VALUES ('" + good.getName() + "', '" + good.getQuantity() + "')");
             }
         } catch (SQLException e) {
             e.printStackTrace();

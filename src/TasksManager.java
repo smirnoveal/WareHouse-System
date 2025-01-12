@@ -8,7 +8,7 @@ public class TasksManager {
     public TasksManager() {
         try {
             Class.forName("org.postgresql.Driver");
-            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/warehouse_system", "username", "password");
+            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1111");
         } catch (Exception e) {
             e.printStackTrace();
         }

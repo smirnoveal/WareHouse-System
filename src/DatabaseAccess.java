@@ -4,20 +4,21 @@ public class DatabaseAccess {
     private Connection connection;
 
     public DatabaseAccess() {
-        try {
-            Class.forName("org.postgresql.Driver");
-            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/Warehouse2",
-                    "postgres", "1111");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
-    public static Connection getConnection() throws SQLException {
-        Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/Warehouse2",
-                "postgres", "1111");
-        return connection;
-    }
+            try {
+                Class.forName("org.postgresql.Driver"); // Загрузка драйвера
+                String url = "jdbc:postgresql://localhost:5432/postgres";
+                String username = "postgres";
+                String password = "1111";
+                this.connection = DriverManager.getConnection(url, username, password);
+                System.out.println("Подключение успешно установлено.");
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
 
     public void executeUpdate(String sql, Object... params) {
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -48,4 +49,7 @@ public class DatabaseAccess {
     }
 
 
+    public Connection getConnection() {
+        return connection;
+    }
 }

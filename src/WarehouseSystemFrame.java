@@ -32,7 +32,7 @@ public class WarehouseSystemFrame extends JFrame {
         addTaskButton = new JButton("Добавить задачу");
         assignTaskButton = new JButton("Назначить задачу");
         getGoodsBalanceButton = new JButton("Получить остаток товаров");
-        goodsListArea = new JTextArea(20, 50);
+        goodsListArea = new JTextArea(30, 70);
         optimizeShipmentsButton = new JButton("Оптимизировать отгрузки");
         performInventoryButton = new JButton("Провести инвентаризацию");
 
