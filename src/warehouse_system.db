@@ -1,0 +1,113 @@
+-- Создание таблиц
+CREATE TABLE Supplier (
+ SupplierCode CHAR(10) PRIMARY KEY,
+ SupplierName VARCHAR(100),
+ BankAccount VARCHAR(50),
+ Address VARCHAR(255)
+);
+
+CREATE TABLE Employee (
+ EmployeeCode CHAR(10) PRIMARY KEY,
+ FMO VARCHAR(100),
+ Position VARCHAR(50),
+ SystemRights VARCHAR(100),
+ NumberOfSuccessfulTasks INT,
+ NumberOfUncompletedTasks INT,
+ KPI DECIMAL(10, 2)
+);
+
+CREATE TABLE Delivery (
+ DeliveryCode CHAR(10),
+ DeliveryDate DATE,
+ DiscrepancyExists BOOLEAN,
+ GoodsAccepted BOOLEAN,
+ EmployeeCode CHAR(10),
+ PRIMARY KEY (DeliveryCode)
+);
+
+CREATE TABLE Product (
+ DeliveryCode CHAR(10),
+ ShipmentCode CHAR(10),
+ ProductCode CHAR(10) UNIQUE, -- ProductCode теперь уникален
+ StorageDate DATE,
+ ProductQuantity DECIMAL(10, 2),
+ ExpirationDate DATE,
+ SpecialStorageConditions VARCHAR(255),
+ RackLabelNumber CHAR(10),
+ EmployeeCode CHAR(10),
+ PRIMARY KEY (DeliveryCode, ShipmentCode, ProductCode)
+);
+
+CREATE TABLE Client (
+ ClientCode CHAR(10) PRIMARY KEY,
+ ClientName VARCHAR(100),
+ BankAccount VARCHAR(50),
+ Address VARCHAR(255)
+);
+
+CREATE TABLE Shipment (
+ ShipmentCode CHAR(10) PRIMARY KEY,
+ ProductCode CHAR(10),
+ ClientCode CHAR(10),
+ ShipmentDate DATE,
+ DiscrepancyExists BOOLEAN,
+ EmployeeCode CHAR(10)
+);
+
+CREATE TABLE Tasks (
+ TaskCode CHAR(10) PRIMARY KEY,
+ EmployeeCode CHAR(10),
+ TaskDescription VARCHAR(255),
+ StartDate DATE,
+ EndDate DATE,
+ CompletionStatus BOOLEAN,
+ CompletionReport TEXT
+);
+
+CREATE TABLE StorageLocation (
+ RackLabelNumber CHAR(10) PRIMARY KEY,
+ ProductCode CHAR(10),
+ StorageNumber INT,
+ SectionNumber INT,
+ RackNumber INT,
+ BinNumber INT,
+ Humidity DECIMAL(5, 2),
+ Temperature DECIMAL(5, 2),
+ VentilationExists BOOLEAN
+);
+
+-- Создание связей (Foreign Keys)
+ALTER TABLE Delivery
+ADD CONSTRAINT fk_delivery_supplier
+FOREIGN KEY (DeliveryCode)
+REFERENCES Supplier(SupplierCode);
+
+ALTER TABLE Product
+ADD CONSTRAINT fk_product_delivery
+FOREIGN KEY (DeliveryCode)
+REFERENCES Delivery(DeliveryCode);
+
+ALTER TABLE Product
+ADD CONSTRAINT fk_product_storage_location
+FOREIGN KEY (RackLabelNumber)
+REFERENCES StorageLocation(RackLabelNumber);
+
+ALTER TABLE Shipment
+ADD CONSTRAINT fk_shipment_product
+FOREIGN KEY (ProductCode)
+REFERENCES Product(ProductCode);
+
+ALTER TABLE Shipment
+ADD CONSTRAINT fk_shipment_client
+FOREIGN KEY (ClientCode)
+REFERENCES Client(ClientCode);
+
+ALTER TABLE Shipment
+ADD CONSTRAINT fk_shipment_employee
+FOREIGN KEY (EmployeeCode)
+REFERENCES Employee(EmployeeCode);
+
+ALTER TABLE Tasks
+ADD CONSTRAINT fk_tasks_employee
+FOREIGN KEY (EmployeeCode)
+REFERENCES Employee(EmployeeCode);
